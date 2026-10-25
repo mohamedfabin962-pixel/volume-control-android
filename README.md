@@ -10,17 +10,7 @@ A lightweight native Android utility that provides quick media volume control wh
 - Custom vertical volume slider
 - Real-time media volume adjustment
 - Automatically hides the volume slider after inactivity
-- Floating handle automatically starts after device reboot
 - No backend, database, account, or internet connection required
-
-## Tech Stack
-
-- Kotlin
-- Android
-- Jetpack Compose
-- Android WindowManager
-- Android AudioManager
-- Custom Android View
 
 ## How It Works
 
@@ -35,11 +25,26 @@ When the handle is tapped:
 
 The app uses Android's overlay functionality so the volume control can be accessed while using other applications.
 
+## Tech Stack
+
+- Kotlin
+- Android
+- Jetpack Compose
+- Android WindowManager
+- Android AudioManager
+- Custom Android View
+
 ## Current Status
 
 ✅ Version 1 — Working prototype
 
-Tested on an Android emulator and Huawei Android 9 device.
+The app has been tested on an Android emulator and a Huawei Android 9 device.
+
+### Known Limitation
+
+On some devices, including the tested Huawei Android 9 device, the floating handle does not automatically return after a full device power-off and reboot.
+
+Opening the Volume Control app once after reboot starts the service and restores the floating handle.
 
 ## Planned Improvements
 
@@ -48,6 +53,7 @@ Tested on an Android emulator and Huawei Android 9 device.
 - Permission handling improvements
 - Tap feedback
 - Additional Android-device compatibility improvements
+- Support for additional volume streams such as ringtone volume
 
 ## Author
 
