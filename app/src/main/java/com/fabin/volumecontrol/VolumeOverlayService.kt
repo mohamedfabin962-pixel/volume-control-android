@@ -1,10 +1,13 @@
 package com.fabin.volumecontrol
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PixelFormat
 import android.media.AudioManager
+import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
@@ -13,6 +16,7 @@ import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
+import androidx.core.app.NotificationCompat
 
 class VolumeOverlayService : Service() {
 
@@ -32,12 +36,41 @@ class VolumeOverlayService : Service() {
     override fun onCreate() {
         super.onCreate()
 
+        // Notification channels are supported from Android 8.0 (API 26)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            val channel = NotificationChannel(
+                "volume_control",
+                "Volume Control",
+                NotificationManager.IMPORTANCE_LOW
+            )
+
+            val notificationManager =
+                getSystemService(NotificationManager::class.java)
+
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        val notification = NotificationCompat.Builder(
+            this,
+            "volume_control"
+        )
+            .setContentTitle("Volume Control")
+            .setContentText("Volume control is active")
+            .setSmallIcon(android.R.drawable.ic_dialog_info)
+            .setOngoing(true)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .build()
+
+        startForeground(1, notification)
+
         if (!Settings.canDrawOverlays(this)) {
             stopSelf()
             return
         }
 
-        windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
+        windowManager =
+            getSystemService(WINDOW_SERVICE) as WindowManager
 
         button = Button(this).apply {
 
