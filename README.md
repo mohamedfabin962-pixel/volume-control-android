@@ -120,6 +120,13 @@ The service was subsequently converted to a foreground service with a persistent
 - Support for additional volume streams such as ringtone and alarm volume
 - Improved boot/restart behavior across device manufacturers
 
+## 📖 Project Story
+
+I wrote a detailed case study about building this project, including the problems I encountered with `AccessibilityService`, how I switched to a `WindowManager` overlay, how I diagnosed the service being destroyed after screen-off, and how a foreground service solved the issue.
+
+**Read the full story on Medium:**  
+[ I Built a Floating Android Volume Controller When My Phone’s Volume Button Stopped Working](https://medium.com/@mohamedfabin962/i-built-a-floating-android-volume-controller-when-my-phones-volume-button-stopped-working-9cdf73c0e09a)
+
 ## Author
 
 Mohamed Fabin
