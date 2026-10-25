@@ -32,21 +32,24 @@ class VolumeOverlayService : Service() {
     override fun onCreate() {
         super.onCreate()
 
-        // Check overlay permission
         if (!Settings.canDrawOverlays(this)) {
             stopSelf()
             return
         }
 
-        // Get WindowManager
         windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
 
-        // Create floating handle
         button = Button(this).apply {
-            text = ""
-            setBackgroundColor(Color.argb(80, 128, 128, 128))
 
+            text = ""
+
+            setBackgroundColor(
+                Color.argb(80, 128, 128, 128)
+            )
+
+            // Single tap → Media volume slider
             setOnClickListener {
+
                 if (slider != null) {
                     return@setOnClickListener
                 }
@@ -70,7 +73,10 @@ class VolumeOverlayService : Service() {
                         0
                     )
 
-                    hideHandler.removeCallbacks(hideSliderRunnable)
+                    hideHandler.removeCallbacks(
+                        hideSliderRunnable
+                    )
+
                     hideHandler.postDelayed(
                         hideSliderRunnable,
                         2000
@@ -85,21 +91,44 @@ class VolumeOverlayService : Service() {
                     PixelFormat.TRANSLUCENT
                 )
 
-                sliderParams.gravity = Gravity.TOP or Gravity.END
+                sliderParams.gravity =
+                    Gravity.TOP or Gravity.END
+
                 sliderParams.x = 40
                 sliderParams.y = 400
 
-                windowManager.addView(slider, sliderParams)
+                windowManager.addView(
+                    slider,
+                    sliderParams
+                )
 
-                hideHandler.removeCallbacks(hideSliderRunnable)
+                hideHandler.removeCallbacks(
+                    hideSliderRunnable
+                )
+
                 hideHandler.postDelayed(
                     hideSliderRunnable,
                     2000
                 )
             }
+
+            // Long press → Android Sound & Vibration settings
+            setOnLongClickListener {
+
+                val intent = Intent(
+                    Settings.ACTION_SOUND_SETTINGS
+                )
+
+                intent.addFlags(
+                    Intent.FLAG_ACTIVITY_NEW_TASK
+                )
+
+                startActivity(intent)
+
+                true
+            }
         }
 
-        // Position and size of floating handle
         val params = WindowManager.LayoutParams(
             60,
             180,
@@ -108,17 +137,23 @@ class VolumeOverlayService : Service() {
             PixelFormat.TRANSLUCENT
         )
 
-        params.gravity = Gravity.TOP or Gravity.END
+        params.gravity =
+            Gravity.TOP or Gravity.END
+
         params.y = 500
 
-        // Show floating handle
-        windowManager.addView(button, params)
+        windowManager.addView(
+            button,
+            params
+        )
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
-        hideHandler.removeCallbacks(hideSliderRunnable)
+        hideHandler.removeCallbacks(
+            hideSliderRunnable
+        )
 
         if (::button.isInitialized) {
             windowManager.removeView(button)
