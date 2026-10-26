@@ -127,6 +127,15 @@ I wrote a detailed case study about building this project, including the problem
 **Read the full story on Medium:**  
 [ I Built a Floating Android Volume Controller When My Phone’s Volume Button Stopped Working](https://medium.com/@mohamedfabin962/i-built-a-floating-android-volume-controller-when-my-phones-volume-button-stopped-working-9cdf73c0e09a)
 
+
+## 📥 Download
+
+Want to try the app on an Android device?
+
+**[Download Volume Control v1.0.0](https://github.com/mohamedfabin962-pixel/volume-control-android/releases/tag/v1.0.0)**
+
+The release includes the APK for testing and demonstration.
+
 ## Author
 
 Mohamed Fabin
