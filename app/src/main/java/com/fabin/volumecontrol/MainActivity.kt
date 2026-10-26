@@ -1,49 +1,131 @@
 package com.fabin.volumecontrol
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.fabin.volumecontrol.ui.theme.VolumeControlTheme
 
 class MainActivity : ComponentActivity() {
+
+    private var showPermissionDialog by mutableStateOf(false)
+    private var permissionRequestStarted = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        startService(Intent(this, VolumeOverlayService::class.java))
-        enableEdgeToEdge()
+
         setContent {
             VolumeControlTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
+
+                if (showPermissionDialog) {
+
+                    AlertDialog(
+                        onDismissRequest = {
+                            showPermissionDialog = false
+                            finish()
+                        },
+
+                        title = {
+                            Text("Permission Required")
+                        },
+
+                        text = {
+                            Text(
+                                "Volume Control needs permission to display " +
+                                        "the volume controller over other apps. " +
+                                        "Please allow this permission to use the app."
+                            )
+                        },
+
+                        confirmButton = {
+                            Button(
+                                onClick = {
+                                    showPermissionDialog = false
+                                    permissionRequestStarted = true
+
+                                    val intent = Intent(
+                                        Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                                        Uri.parse("package:$packageName")
+                                    )
+
+                                    startActivity(intent)
+                                }
+                            ) {
+                                Text("Allow")
+                            }
+                        },
+
+                        dismissButton = {
+                            TextButton(
+                                onClick = {
+                                    showPermissionDialog = false
+                                    finish()
+                                }
+                            ) {
+                                Text("Not Now")
+                            }
+                        }
                     )
                 }
             }
         }
+
+        checkOverlayPermission()
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+    private fun checkOverlayPermission() {
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    VolumeControlTheme {
-        Greeting("Android")
+        if (Settings.canDrawOverlays(this)) {
+
+            // Permission already granted.
+            // Start the floating controller immediately.
+            startVolumeService()
+
+        } else {
+
+            // Show our explanation before opening Android Settings.
+            showPermissionDialog = true
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (!permissionRequestStarted) {
+            return
+        }
+
+        permissionRequestStarted = false
+
+        if (Settings.canDrawOverlays(this)) {
+
+            // User enabled the permission.
+            startVolumeService()
+
+        } else {
+
+            // User returned without enabling the permission.
+            finish()
+        }
+    }
+
+    private fun startVolumeService() {
+
+        startService(
+            Intent(this, VolumeOverlayService::class.java)
+        )
+
+        // Close the Activity.
+        // The floating controller is the actual app interface.
+        finish()
     }
 }
