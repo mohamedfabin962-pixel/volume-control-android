@@ -11,6 +11,7 @@ A lightweight native Android utility that provides quick system-wide media volum
 - Real-time media volume adjustment
 - Automatically hides the volume slider after inactivity
 - Long press opens Android Sound & Vibration settings
+- Clear overlay permission flow
 - Foreground service for reliable background operation
 - No backend, database, account, or internet connection required
 
@@ -18,7 +19,21 @@ A lightweight native Android utility that provides quick system-wide media volum
 
 The app runs a foreground service that displays a floating handle on the edge of the screen using Android's overlay functionality.
 
-When the handle is tapped:
+### Startup & Permission Flow
+
+The app does not use a traditional home screen. The floating controller itself is the primary interface.
+
+When the app is opened:
+
+1. If overlay permission is already granted, the floating controller starts immediately.
+2. If permission has not been granted, the app first explains why the permission is required.
+3. Selecting **Allow** opens Android's **Display over other apps** settings.
+4. After the permission is enabled, returning to the app automatically starts the floating controller.
+5. Selecting **Not Now**, or returning without granting the permission, closes the app.
+
+### Volume Control
+
+When the floating handle is tapped:
 
 1. A vertical volume slider appears.
 2. The current media volume is displayed.
@@ -79,7 +94,7 @@ Key Android APIs:
 
 ## Current Status
 
-✅ Version 1 — Working prototype
+✅ **Version 1.0.1 — Working**
 
 The application has been tested on:
 
@@ -114,7 +129,6 @@ The service was subsequently converted to a foreground service with a persistent
 
 - Better floating handle design
 - Improved transparency and positioning
-- Permission handling improvements
 - Tap feedback
 - Additional Android-device compatibility improvements
 - Support for additional volume streams such as ringtone and alarm volume
@@ -125,14 +139,13 @@ The service was subsequently converted to a foreground service with a persistent
 I wrote a detailed case study about building this project, including the problems I encountered with `AccessibilityService`, how I switched to a `WindowManager` overlay, how I diagnosed the service being destroyed after screen-off, and how a foreground service solved the issue.
 
 **Read the full story on Medium:**  
-[ I Built a Floating Android Volume Controller When My Phone’s Volume Button Stopped Working](https://medium.com/@mohamedfabin962/i-built-a-floating-android-volume-controller-when-my-phones-volume-button-stopped-working-9cdf73c0e09a)
-
+https://medium.com/@mohamedfabin962/i-built-a-floating-android-volume-controller-when-my-phones-volume-button-stopped-working-9cdf73c0e09a
 
 ## 📥 Download
 
 Want to try the app on an Android device?
 
-**[Download Volume Control v1.0.0](https://github.com/mohamedfabin962-pixel/volume-control-android/releases/tag/v1.0.0)**
+[**Download Volume Control v1.0.1**](https://github.com/mohamedfabin962-pixel/volume-control-android/releases/tag/v1.0.1)
 
 The release includes the APK for testing and demonstration.
 
